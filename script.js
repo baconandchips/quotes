@@ -5,14 +5,12 @@ const twitterBtn = document.getElementById('twitter');
 const newQuoteBtn = document.getElementById('new-quote');
 const loader = document.getElementById('loader');
 
-// Show Loading
-function loading() {
+function showLoadingSpinner() {
     loader.hidden = false;
     quoteContainer.hidden = true; 
 }
 
-// Hide Loading
-function complete() {
+function removeLoadingSpinner() {
     if (!loader.hidden) {
         quoteContainer.hidden = false;
         loader.hidden = true;
@@ -20,15 +18,15 @@ function complete() {
 }
 
 // Get Quote From API
-async function getQuote() {
-    loading()
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+async function getQuote(counter) {
+    showLoadingSpinner();
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     const apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
     try {
         const response = await fetch(proxyUrl + apiUrl);
         const data = await response.json();
         if (data.quoteAuthor === '') {
-            quthorText.innerText = 'Unknown';
+            authorText.innerText = 'Unknown';
         } else {
             authorText.innerText = data.quoteAuthor;
         }
@@ -42,10 +40,18 @@ async function getQuote() {
         }
         quoteText.innerText = data.quoteText;
         // Stop Loader, Show Quote
-        complete();
+        removeLoadingSpinner();
     } catch (error) {
-        getQuote(); // Try again and get a useable message
-        console.log('No quote here! Error message: ', error)
+        console.log('No quote here! Error message: ', error);
+        if (counter < 5) {
+            getQuote(++counter); // Try again and get a useable message
+        } else {
+            quoteText.innerText = `What you are is what you have been. What you'll be is what you do now.`;
+            authorText.innerText = `Buddha`;
+            removeLoadingSpinner();
+            console.log('Tried API too many times. Putting in default quote.');
+        }
+        
     }
 }
 
@@ -58,8 +64,8 @@ function tweetQuote() {
 }
 
 // Event Listeners
-newQuoteBtn.addEventListener('click', getQuote);
+newQuoteBtn.addEventListener('click', getQuote(0));
 twitterBtn.addEventListener('click', tweetQuote);
 
 // On Load
-getQuote();
+getQuote(0);
