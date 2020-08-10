@@ -18,7 +18,12 @@ function removeLoadingSpinner() {
 }
 
 // Get Quote From API
-async function getQuote(counter) {
+async function getQuote(counterAcc) {
+    let counter = counterAcc;
+    // console.log("typeof counter: ", (typeof counter));
+    if (!counter || typeof counter !== "number") {
+        counter = 0;
+    }
     showLoadingSpinner();
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     const apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
@@ -64,8 +69,8 @@ function tweetQuote() {
 }
 
 // Event Listeners
-newQuoteBtn.addEventListener('click', getQuote(0));
+newQuoteBtn.addEventListener('click', getQuote);
 twitterBtn.addEventListener('click', tweetQuote);
 
 // On Load
-getQuote(0);
+getQuote();
