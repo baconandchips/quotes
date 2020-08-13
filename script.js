@@ -17,10 +17,8 @@ function removeLoadingSpinner() {
     }
 }
 
-// Get Quote From API
-async function getQuote(counterAcc) {
+async function getQuoteFromAPI(counterAcc) {
     let counter = counterAcc;
-    // console.log("typeof counter: ", (typeof counter));
     if (!counter || typeof counter !== "number") {
         counter = 0;
     }
@@ -49,7 +47,7 @@ async function getQuote(counterAcc) {
     } catch (error) {
         console.log('No quote here! Error message: ', error);
         if (counter < 5) {
-            getQuote(++counter); // Try again and get a useable message
+            getQuoteFromAPI(++counter); // Try again and get a useable message
         } else {
             quoteText.innerText = `What you are is what you have been. What you'll be is what you do now.`;
             authorText.innerText = `Buddha`;
@@ -60,7 +58,6 @@ async function getQuote(counterAcc) {
     }
 }
 
-// Tweet Quote
 function tweetQuote() {
     const quote = quoteText.innerText;
     const author = authorText.innerText;
@@ -69,8 +66,8 @@ function tweetQuote() {
 }
 
 // Event Listeners
-newQuoteBtn.addEventListener('click', getQuote);
+newQuoteBtn.addEventListener('click', getQuoteFromAPI);
 twitterBtn.addEventListener('click', tweetQuote);
 
 // On Load
-getQuote();
+getQuoteFromAPI();
